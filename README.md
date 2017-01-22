@@ -1,2 +1,2 @@
 # android_test
-a weather application test
+一个查看天气的学习测试android程序

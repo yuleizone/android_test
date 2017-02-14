@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yln1172.myweather.R;
+import com.example.yln1172.myweather.service.AutoUpdateService;
 import com.example.yln1172.myweather.utils.HttpCallBackListener;
 import com.example.yln1172.myweather.utils.HttpUtil;
 import com.example.yln1172.myweather.utils.Utility;
@@ -148,6 +149,8 @@ public class WeatherActivity extends Activity {
         tvPublishDate.setText("今天"+sharedPreferences.getString("publish_time","") + "发布");
         lyWeatherInfo.setVisibility(View.VISIBLE);
         tvCityName.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     private void showProgressDialog(){

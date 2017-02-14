@@ -37,16 +37,18 @@ public class AutoUpdateService extends Service {
         }).start();
 
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        //int eightHours = 8 * 60 * 60 *1000; //8小时毫秒数
-        int eightHours = 1000; //8小时毫秒数
+        int eightHours = 8 * 60 * 60 *1000; //8小时毫秒数
+        //int eightHours = 10*1000; //8小时毫秒数
         long triggerAtTime = SystemClock.elapsedRealtime() + eightHours;
         Intent i = new Intent(this,AutoUpdateReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this,0,i,0);
+        /*
         Calendar calendar=Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.add(Calendar.SECOND, 5);
-        //manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pi);
-        manager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pi);
+        */
+        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pi);
+        //manager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pi);
         return super.onStartCommand(intent,flags,startId);
     }
 

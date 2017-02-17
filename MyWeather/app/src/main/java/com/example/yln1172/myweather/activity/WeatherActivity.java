@@ -32,6 +32,28 @@ public class WeatherActivity extends Activity {
     private LinearLayout lyWeatherInfo;
     private Button btSwitchCity;
     private Button btFresh;
+    private String weatherCodeStr;
+
+
+    private TextView tvDate1; //明天的日期
+    private TextView tvDsc1;  //明天的描述
+    private TextView tvTempStart1; //明天的最低温度
+    private TextView tvTempEnd1; //明天的最高温度
+
+    private TextView tvDate2; //后天的日期
+    private TextView tvDsc2;  //后天的描述
+    private TextView tvTempStart2; //后天的最低温度
+    private TextView tvTempEnd2; //后天的最高温度
+
+    private TextView tvDate3; //大后天的日期
+    private TextView tvDsc3;  //大后天的描述
+    private TextView tvTempStart3; //大后天的最低温度
+    private TextView tvTempEnd3; //大后天的最高温度
+
+    private TextView tvDate4; //大大后天的日期
+    private TextView tvDsc4;  //大大后天的描述
+    private TextView tvTempStart4; //大大后天的最低温度
+    private TextView tvTempEnd4; //大大后天的最高温度
 
     private ProgressDialog progressDialog;
 
@@ -48,6 +70,26 @@ public class WeatherActivity extends Activity {
         tvTempEnd       = (TextView)findViewById(R.id.tv_weather_temp_end);
         tvTempDsc       = (TextView)findViewById(R.id.tv_weather_description);
         lyWeatherInfo   = (LinearLayout)findViewById(R.id.ly_weather_ifo);
+
+        tvDate1         = (TextView)findViewById(R.id.tv_date1);
+        tvDsc1          = (TextView)findViewById(R.id.tv_dsc1);
+        tvTempStart1    = (TextView)findViewById(R.id.tv_weather_forest1_tmp_start);
+        tvTempEnd1      = (TextView)findViewById(R.id.tv_weather_forest1_tmp_end);
+
+        tvDate2         = (TextView)findViewById(R.id.tv_date2);
+        tvDsc2          = (TextView)findViewById(R.id.tv_dsc2);
+        tvTempStart2    = (TextView)findViewById(R.id.tv_weather_forest2_tmp_start);
+        tvTempEnd2      = (TextView)findViewById(R.id.tv_weather_forest2_tmp_end);
+
+        tvDate3         = (TextView)findViewById(R.id.tv_date3);
+        tvDsc3          = (TextView)findViewById(R.id.tv_dsc3);
+        tvTempStart3    = (TextView)findViewById(R.id.tv_weather_forest3_tmp_start);
+        tvTempEnd3      = (TextView)findViewById(R.id.tv_weather_forest3_tmp_end);
+
+        tvDate4         = (TextView)findViewById(R.id.tv_date4);
+        tvDsc4          = (TextView)findViewById(R.id.tv_dsc4);
+        tvTempStart4    = (TextView)findViewById(R.id.tv_weather_forest4_tmp_start);
+        tvTempEnd4      = (TextView)findViewById(R.id.tv_weather_forest4_tmp_end);
 
         btSwitchCity    = (Button)findViewById(R.id.bt_switch_city);
         btFresh         = (Button)findViewById(R.id.bt_refresh);
@@ -70,6 +112,7 @@ public class WeatherActivity extends Activity {
                 String weather_code = prefs.getString("weather_code","");
                 if(!TextUtils.isEmpty(weather_code)){
                     showProgressDialog();
+                    weatherCodeStr = weather_code;
                     queryWeatherFromWeatherCode(weather_code);
                 }
             }
@@ -97,7 +140,10 @@ public class WeatherActivity extends Activity {
         //新的接口
         // http://wthrcdn.etouch.cn/WeatherApi?citykey=101010100  通过城市id获得天气数据，xml文件数据,
         //http://wthrcdn.etouch.cn/WeatherApi?city=北京 通过城市名字获得天气数据，xml文件数据
-        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        //String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        //queryFromServer(address,"weatherCode");
+
+        String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey=" + weatherCode;
         queryFromServer(address,"weatherCode");
     }
 
@@ -111,11 +157,13 @@ public class WeatherActivity extends Activity {
                         String[] array = response.split("\\|");
                         if(array != null || array.length == 2){
                             String weatherCode = array[1];
+                            weatherCodeStr = weatherCode;
                             queryWeatherFromWeatherCode(weatherCode);
                         }
                     }
                 }else if("weatherCode".equals(type)){
-                    Utility.handleWeatherResponse(WeatherActivity.this,response);
+                    //Utility.handleWeatherResponse(WeatherActivity.this,response);
+                    Utility.parseWeatherResponseXml(WeatherActivity.this,response,weatherCodeStr);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -147,6 +195,28 @@ public class WeatherActivity extends Activity {
         tvTempDsc.setText(sharedPreferences.getString("weather_dsc",""));
         tvWeatherDate.setText(sharedPreferences.getString("current_date",""));
         tvPublishDate.setText("今天"+sharedPreferences.getString("publish_time","") + "发布");
+
+        //预测的天气
+        tvDate1.setText(sharedPreferences.getString("weather_date1",""));
+        tvDsc1.setText(sharedPreferences.getString("weather_dsc1",""));
+        tvTempStart1.setText(sharedPreferences.getString("temp_start1",""));
+        tvTempEnd1.setText(sharedPreferences.getString("temp_end1",""));
+
+        tvDate2.setText(sharedPreferences.getString("weather_date2",""));
+        tvDsc2.setText(sharedPreferences.getString("weather_dsc2",""));
+        tvTempStart2.setText(sharedPreferences.getString("temp_start2",""));
+        tvTempEnd2.setText(sharedPreferences.getString("temp_end2",""));
+
+        tvDate3.setText(sharedPreferences.getString("weather_date3",""));
+        tvDsc3.setText(sharedPreferences.getString("weather_dsc3",""));
+        tvTempStart3.setText(sharedPreferences.getString("temp_start3",""));
+        tvTempEnd3.setText(sharedPreferences.getString("temp_end3",""));
+
+        tvDate4.setText(sharedPreferences.getString("weather_date4",""));
+        tvDsc4.setText(sharedPreferences.getString("weather_dsc4",""));
+        tvTempStart4.setText(sharedPreferences.getString("temp_start4",""));
+        tvTempEnd4.setText(sharedPreferences.getString("temp_end4",""));
+
         lyWeatherInfo.setVisibility(View.VISIBLE);
         tvCityName.setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, AutoUpdateService.class);
